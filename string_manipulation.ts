@@ -53,3 +53,5 @@ console.log(transformWords(['  nice', 'hey there     ', '   woah       man ']));
 console.log(transformWords(['hi']));
 console.log(transformWords([]));
 console.log(transformWords(['hey', '    hey', 'hey   ']));
+console.log(transformWords(['a']));
+console.log(transformWords(['I']));
