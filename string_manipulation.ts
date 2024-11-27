@@ -25,28 +25,28 @@ Examples:
 */
 
 function transformWords(words: string[]): string[] {
-    let transformedWords: string[] = [];
+  let transformedWords: string[] = [];
 
-    for (let i = 0; i < words.length; i++) {
-        let splitWords: string[] = words[i].split(' ').filter(Boolean);
-        let transformedWord: string = '';
+  for (let i = 0; i < words.length; i++) {
+    let splitWords: string[] = words[i].split(' ').filter(Boolean);
+    let transformedWord: string = '';
 
-        for (let j = 0; j < splitWords.length; j++) {
-            if (j == splitWords.length - 1) {
-                transformedWord += capitalizeFirstLetter(splitWords[j]);
-            } else {
-                transformedWord += capitalizeFirstLetter(splitWords[j]) + ' '; 
-            }
-        }
-
-        transformedWords.push(transformedWord);
+    for (let j = 0; j < splitWords.length; j++) {
+      if (j == splitWords.length - 1) {
+        transformedWord += capitalizeFirstLetter(splitWords[j]);
+      } else {
+        transformedWord += capitalizeFirstLetter(splitWords[j]) + ' '; 
+      }
     }
 
-    return transformedWords.sort((a,b) => a.localeCompare(b));
+    transformedWords.push(transformedWord);
+  }
+
+  return transformedWords.sort((a,b) => a.localeCompare(b));
 }
 
 function capitalizeFirstLetter(word: string): string {
-    return word.slice(0, 1).toUpperCase() + word.slice(1); 
+  return word.slice(0, 1).toUpperCase() + word.slice(1); 
 }
 
 console.log(transformWords(['  nice', 'hey there     ', '   woah       man ']));
