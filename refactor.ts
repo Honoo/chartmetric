@@ -1,5 +1,5 @@
 interface GetArtistInsightsQuery {
-  artist_id: string,
+  artistId: string,
   limit: number,
   weight?: number,
   daysAgo: number,
@@ -23,7 +23,7 @@ async function getArtistInsights(query: GetArtistInsightsQuery): Promise<{ newsI
   if (typeof query.weight === 'undefined') {
     const counts = await snowflakeClientExecuteQuery(
       QUERIES.QUERY_GET_ARTIST_INFO.ARTIST_INSIGHTS.GET_INSIGHTS_COUNT(
-        query.artist_id,
+        query.artistId,
         highWeight,
         mediumWeight,
         query.daysAgo
@@ -46,7 +46,7 @@ async function getArtistInsights(query: GetArtistInsightsQuery): Promise<{ newsI
 
   const rawResults = await snowflakeClientExecuteQuery(
     QUERIES.QUERY_GET_ARTIST_INFO.ARTIST_INSIGHTS.GET_ARTIST_INSIGHTS(
-      query.artist_id,
+      query.artistId,
       query.limit * 10,
       weight,
       query.daysAgo
