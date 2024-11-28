@@ -6,31 +6,39 @@ interface GetArtistInsightsQuery {
   isNewsFormat: boolean
 }
 
-async function getArtistInsights(query: GetArtistInsightsQuery) {
-  const high_weight: number = 8;
-  const medium_weight: number = 4;
-  const low_weight: number = 1;
+interface Insight {
+  // Insight is a placeholder for the return type of formatInsight()
+}
+
+interface News {
+  // News is a placeholder for the return type of insightToNews()
+}
+
+async function getArtistInsights(query: GetArtistInsightsQuery): Promise<{ newsInsights: News[], weight: number } | Insight[]> {
+  const highWeight: number = 8;
+  const mediumWeight: number = 4;
+  const lowWeight: number = 1;
 
   let weight: number;
   if (typeof query.weight === 'undefined') {
     const counts = await snowflakeClientExecuteQuery(
       QUERIES.QUERY_GET_ARTIST_INFO.ARTIST_INSIGHTS.GET_INSIGHTS_COUNT(
         query.artist_id,
-        high_weight,
-        medium_weight,
+        highWeight,
+        mediumWeight,
         query.daysAgo
       )
     );
 
-    const high = counts[0]?.count;
-    const medium = counts[1]?.count;
+    const highCounts = counts[0]?.count;
+    const mediumCounts = counts[1]?.count;
 
-    if(typeof high !== 'undefined') {
-      weight = high_weight;
-    } else if (typeof medium !== 'undefined') {
-      weight = medium_weight;
+    if(typeof highCounts !== 'undefined') {
+      weight = highWeight;
+    } else if (typeof mediumCounts !== 'undefined') {
+      weight = mediumWeight;
     } else {
-      weight = low_weight;
+      weight = lowWeight;
     }
   } else {
     weight = query.weight;
@@ -51,18 +59,18 @@ async function getArtistInsights(query: GetArtistInsightsQuery) {
   for (const result of filteredResults) {
     promises.push(formatInsight(result));
   }
-  let results = await Promise.all(promises);
-  results = results.filter(e => e != null);
-  results = results.slice(0, query.limit + (10 - weight) * 200);
+  let insights: Insight[] = await Promise.all(promises);
+  insights = insights.filter(e => e != null);
+  insights = insights.slice(0, query.limit + ((10 - weight) * 200));
 
   if (query.isNewsFormat) {
     let promises = [];
-    for(const result of results) {
-      promises.push(insightToNews(result));
+    for(const insight of insights) {
+      promises.push(insightToNews(insight));
     }
-    const insights = await Promise.all(promises);
-    return { insights, weight };
+    const newsInsights: News[] = await Promise.all(promises);
+    return { newsInsights, weight };
   } else {
-    return results;
+    return insights;
   }
 }
