@@ -25,28 +25,25 @@ Examples:
 */
 
 function transformWords(words: string[]): string[] {
-  let transformedWords: string[] = [];
+  const transformedWords = words.map((word: string) => {
+    const splitWord = word.split(' ').filter(Boolean);
 
-  for (let i = 0; i < words.length; i++) {
-    let splitWords: string[] = words[i].split(' ').filter(Boolean);
-    let transformedWord: string = '';
-
-    for (let j = 0; j < splitWords.length; j++) {
-      if (j == splitWords.length - 1) {
-        transformedWord += capitalizeFirstLetter(splitWords[j]);
+    const transformedWord = splitWord.map((wordSection: string, index: number) => {
+      if (index === splitWord.length - 1) {
+        return `${capitalizeFirstLetter(wordSection)}`;
       } else {
-        transformedWord += capitalizeFirstLetter(splitWords[j]) + ' '; 
+        return `${capitalizeFirstLetter(wordSection)} `;
       }
-    }
+    });
 
-    transformedWords.push(transformedWord);
-  }
+    return transformedWord.reduce((accumulator, currentValue) => `${accumulator}${currentValue}`);
+  });
 
   return transformedWords.sort((a,b) => a.localeCompare(b));
 }
 
 function capitalizeFirstLetter(word: string): string {
-  return word.slice(0, 1).toUpperCase() + word.slice(1); 
+  return `${word.slice(0, 1).toUpperCase()}${word.slice(1)}`; 
 }
 
 console.log(transformWords(['  nice', 'hey there     ', '   woah       man ']));
@@ -55,3 +52,4 @@ console.log(transformWords([]));
 console.log(transformWords(['hey', '    hey', 'hey   ']));
 console.log(transformWords(['a']));
 console.log(transformWords(['I']));
+console.log(transformWords(['    I like tea       ']));
